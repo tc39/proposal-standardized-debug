@@ -1,4 +1,4 @@
-# Standard Debugging
+# Standardized Debug
 
 ## Problem
 
