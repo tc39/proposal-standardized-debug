@@ -1,5 +1,7 @@
 # Standardized Debug
 
+This proposal is at Stage 1 of the [TC39 Process](https://tc39.es/process-document/).
+
 ## Problem
 
 ```js
