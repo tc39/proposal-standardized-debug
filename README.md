@@ -2,77 +2,12 @@
 
 This proposal is at Stage 1 of the [TC39 Process](https://tc39.es/process-document/).
 
-## Problem
+This proposal suggests adding the following meta-property-functions to ES:
 
-```js
-function doSomething(a) {
-  let b = (a + costlyOperation()) * 2;
-  // ...
-}
+- `debugger.log ( v )`
+- `debugger.break ( [ v ] )`
 
-function doSomething(a) {
-  console.log(a + costlyOperation());  // ❌ duplicated costlyOperation()
-  let b = (a + costlyOperation()) * 2;
-  // ...
-}
-
-function doSomething(a) {
-  let tmp = a + costlyOperation();  // ❌ needless refactoring, extra variable
-  console.log(tmp);
-  let b = tmp * 2;
-  // ...
-}
-```
-
-```js
-foo()
-  .then((bar) => bar.baz());
-  
-foo()
-  .then((bar) => {    // ❌ relatively large refactoring for logging a variable
-    console.log(bar);
-    return bar.baz();
-  });
-  
-foo()
-  .then((bar) => {    // ❌ lots of extra code, could change tick ordering
-    console.log(bar);
-    return bar;
-  })
-  .then((bar) => bar.baz());
-```
-
-## Solutions
-
-### New Syntax
-
-```js
-function doSomething(a) {
-  let b = dbg!(a + costlyOperation()) * 2;
-  // ...
-}
-```
-
-### Existing Syntax
-
-```js
-function doSomething(a) {
-  let b = debugger(a + costlyOperation()) * 2;
-  // ...
-}
-```
-
-### Global Variable
-
-```js
-function doSomething(a) {
-  let b = globalThis.debug(a + costlyOperation()) * 2;
-  // ...
-}
-```
-
-### Something Else?
-
-```js
-// ...?
-```
+Note that, like `import()`, they are only valid in call expression form. For
+example, `x().then(debugger.break)` would be invalid. You would have to do
+`x().then((v) => debugger.break(v))`. This limitation is in place to ensure
+these methods (particularly `break`) are only ever invoked from ECMAScript code.

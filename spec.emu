@@ -9,15 +9,55 @@ stage: 1
 contributors: devsnek
 </pre>
 
-<emu-clause id="sec-demo-clause">
-  <h1>This is an emu-clause</h1>
-  <p>This is an algorithm:</p>
-  <emu-alg>
-    1. Let _proposal_ be *undefined*.
-    1. If IsAccepted(_proposal_),
-      1. Let _stage_ be *0*.
-    1. Else,
-      1. Let _stage_ be *-1*.
-    1. Return ? ToString(_proposal_).
-  </emu-alg>
+<emu-clause id="sec-left-hand-side-expressions">
+  <h1>Left-Hand-Side Expressions</h1>
+  <h2>Syntax</h2>
+  <emu-grammar>
+    CallExpression[Yield, Await] :
+      CoverCallExpressionAndAsyncArrowHead[?Yield, ?Await]
+      SuperCall[?Yield, ?Await]
+      ImportCall[?Yield, ?Await]
+      <ins>DebuggerMetaCall[?Yield, ?Await]</ins>
+      CallExpression[?Yield, ?Await] Arguments[?Yield, ?Await]
+      CallExpression[?Yield, ?Await] `[` Expression[+In, ?Yield, ?Await] `]`
+      CallExpression[?Yield, ?Await] `.` IdentifierName
+      CallExpression[?Yield, ?Await] TemplateLiteral[?Yield, ?Await, +Tagged]
+
+    <ins>
+    DebuggerMetaCall[Yield, Await] :
+      `debugger` `.` `log` `(` AssignmentExpression[+In, ?Yield, ?Await] `)`
+      `debugger` `.` `break` `(` AssignmentExpression[+In, ?Yield, ?Await]? `)`
+    </ins>
+  </emu-grammar>
+
+  <emu-clause id="sec-meta-properties">
+    <h1>Meta Properties</h1>
+    <emu-clause id="sec-meta-properties-runtime-semantics-evaluation">
+      <h1>Runtime Semantics: Evaluation</h1>
+
+      <emu-grammar>DebuggerMetaCall : `debugger` `.` `log` `(` AssignmentExpression `)` </emu-grammar>
+      <emu-alg>
+        1. Let _exprRef_ be the result of evaluating |AssignmentExpression|.
+        1. Let _expr_ be ? GetValue(_exprRef_).
+        1. If an implementation-defined debugging facility is available and enabled, then
+          1. Perform an implementation-defined debugging action with _expr_. This must not return an abrupt completion.
+        1. Return _expr_.
+      </emu-alg>
+
+      <emu-grammar>DebuggerMetaCall : `debugger` `.` `break` `(` AssignmentExpression? `)` </emu-grammar>
+      <emu-alg>
+        1. If |AssignmentExpression| is present, then
+          1. Let _exprRef_ be the result of evaluating |AssignmentExpression|.
+          1. Let _expr_ be ? GetValue(_exprRef_).
+        1. Else,
+          1. Let _expr_ be ~empty~.
+          1. NOTE: ~empty~ is used to signify the difference between *undefined* being passed and no argument being present.
+        1. If an implementation-defined debugging facility is available and enabled, then
+          1. Perform an implementation-defined debugging action with _expr_. This must not return an abrupt completion.
+        1. If _expr_ is ~empty~, then
+          1. Return *undefined*.
+        1. Return _expr_.
+      </emu-alg>
+    </emu-clause>
+  </emu-clause>
 </emu-clause>
