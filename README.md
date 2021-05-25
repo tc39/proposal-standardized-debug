@@ -2,6 +2,8 @@
 
 This proposal is at Stage 1 of the [TC39 Process](https://tc39.es/process-document/).
 
+[TC39 Notes here](https://github.com/tc39/notes/blob/8711614630f631cb51dfb803caa087bedfc051a3/meetings/2020-11/nov-17.md#standardized-debug-for-stage-2).
+
 ## Motivation
 
 Different environments expose different APIs for interacting with debugger
